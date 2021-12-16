@@ -1,0 +1,5 @@
+.env
+tests/
+client_wAPI_DOWNSTAIRS_DEF/client_wAPI_DOWNSTAIRS_DEF_variable.ino
+client_wAPI_UPSTAIRS_DEF/client_wAPI_UPSTAIRS_DEF_variable.ino
+master_wAPI/master_wAPI_variable.ino
