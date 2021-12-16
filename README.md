@@ -1,2 +1,2 @@
 # furnaceControl
-ESP8266 scripts to monitor and control a house furnace.
+Scripts to monitor and control a house furnace via pyhton API and ESP8266
