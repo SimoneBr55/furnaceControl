@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>//https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266WiFi/src/ESP8266WiFi.h
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
+#include "variables.h"
 
 //Constants
 #define LED BUILTIN_LED
@@ -9,8 +10,6 @@
 #define furnace 5
 //Parameters
 String nom = "FURNACE";
-const char* ssid = "ssid";
-const char* password = "password";
 //Variables
 //String command;
 //int wait = 0;
@@ -18,7 +17,7 @@ bool state = false;
 int lastcheck;
 int exit_code;
 int keepalive = 60000;
-//unsigned long previousRequest = 0;
+
 //Objects
 WiFiClient master;
 String checkURL = "http://192.168.1.7:5000/check";
@@ -27,12 +26,6 @@ String alarmURL = "http://192.168.1.7:5000/alarm";
 // mail stuff
 #include <Arduino.h>
 #include <ESP_Mail_Client.h>
-#define SMTP_HOST "mailserver"
-#define SMTP_PORT 465
-#define AUTHOR_EMAIL "email"
-#define AUTHOR_PASSWORD "password"
-#define SMTP_DOMAIN "domain"
-#define ADMIN_EMAIL "emailto"
 SMTPSession smtp;
 
 void smtpCallback(SMTP_Status status);
@@ -97,12 +90,12 @@ void checkCode(int code){
       }
   } else if (code == 9999) {
     Serial.println("Maintenance");
-    furnOff();
-    while (requestStatus() == 9999){
-      delay(1000);
-    }
+    checkURL = "http://192.168.1.22:5000/check";
+    alarmURL = "http://192.168.1.22:5000/alarm";
   } else if (code = 10000) {
-    //
+    Serial.println("Out of Maintenance");
+    checkURL = "http://192.168.1.7:5000/check";
+    alarmURL = "http://192.168.1.7:5000/alarm";
   }
 }
 

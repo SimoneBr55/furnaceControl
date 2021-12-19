@@ -1,13 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
-#include "client_wAPI_UPSTAIRS_DEF_variable.h"
+#include "variables.h"
 
 //Constants
-//const char* ssid="ssid";
-//const char* password="password";
-String nom="UPSTAIRS";
 #define LED LED_BUILTIN
+String nom_string(nom);
 
 int keepalive = 60000;
 int lastcheck;
@@ -15,12 +13,6 @@ int lastcheck;
 //mail stuff
 #include <Arduino.h>
 #include <ESP_Mail_Client.h>
-//#define SMTP_HOST "mailserver"
-//#define SMTP_PORT 465
-//#define AUTHOR_EMAIL "email"
-//#define AUTHOR_PASSWORD "password"
-//#define SMTP_DOMAIN "domain"
-//#define ADMIN_EMAIL "emailto"
 SMTPSession smtp;
 void smtpCallback(SMTP_Status status);
 
@@ -101,11 +93,11 @@ void mail(){
   session.time.gmt_offset = 1;
   session.time.day_light_offset = 0;
   SMTP_Message message;
-  message.sender.name = "UPSTAIRS";
+  message.sender.name = nom;
   message.sender.email = AUTHOR_EMAIL;
   message.subject = "Furnace Control requires your attention";
   message.addRecipient("admin", ADMIN_EMAIL);
-  String textMsg = "I am UPSTAIRS. There is no connection to local DNS.";
+  String textMsg = "I am " + nom_string + ". There is no connection to local DNS.";
   message.text.content = textMsg.c_str();
   message.addHeader("Message-ID: <administrator>");
   if (!smtp.connect(&session)){

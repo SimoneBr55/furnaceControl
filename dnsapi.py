@@ -12,7 +12,7 @@ manual = False
 lastUp = 0
 lastDown = 0
 payload = 0
-schedule = [(12600,13200)]
+schedule = [(12600, 13200)]
 
 app = Flask(__name__)
 api = Api(app)
@@ -58,7 +58,7 @@ class check(Resource):
 		global manual
 		global payload
 		global schedule
-		if (payload == 9999):
+		if (payload == 9999 or payload == 10000):
 			return payload
 		resetTime = 240
 		today = datetime.date.today()
@@ -83,13 +83,16 @@ class automatic(Resource):
 		manual = False
 		return 200
 
-class maintenance(Resource):
+class maintenanceOn(Resource):
 	def get(self):
 		global payload
-		if (payload == 9999):
-			payload == 3140
-		else:
-			payload = 9999
+		payload = 9999
+		return 200
+
+class maintenanceOff(Resource):
+	def get(self):
+		global payload
+		payload = 10000
 		return 200
 
 class furnOn(Resource):
@@ -98,7 +101,7 @@ class furnOn(Resource):
 		global payload
 		manual = True
 		payload = 3141
-		return 200
+		#return 200
 
 class furnOff(Resource):
 	def get(self):
@@ -110,6 +113,34 @@ class furnOff(Resource):
 
 @app.route("/")
 def home():
+	page = """<!DOCTYPE HTML>
+	<html>
+	<head>
+	<meta name='apple-mobile-web-app-capable' content='yes' />
+	<meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
+	<meta charset=\"utf-8\" />
+	</head>
+	<body style = ' background-color:#000000; color:white;'>
+	<h1><center> ESP8266 - Controllo Elettrico Caldaia </center></h1>
+	<hr/><hr>
+	<br><br>
+	<br><br>
+	<h2> Comandi </h2>
+    <center>
+    Accensione Manuale
+    <a href='/furnOn.html'><button>Accendi Caldaia</button></a>
+    <a href='/furnOff.html'><button>Spegni Caldaia</button></a><br />
+    <a href='/automatic.html'><button>Ritorna in Automatico</button></a>
+    </center>
+    <br><br>
+    <br><br>
+	</body>
+	</html>"""
+	return page
+
+
+@app.route("/advanced")
+def advanced():
 	global upState
 	global downState
 	global manual
@@ -118,7 +149,7 @@ def home():
  <head>
  <meta name='apple-mobile-web-app-capable' content='yes' />
  <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
- <meta http-equiv=\"refresh\" content=\"1; url=/\">
+ <meta http-equiv=\"refresh\" content=\"1; url=/advanced\">
  <meta charset=\"utf-8\" />
  </head>
  <body style = ' background-color:#000000; color:white;'>
@@ -176,10 +207,8 @@ def home():
 <center>
 """
 	page += waitforit
-	if (payload == 9999):
-		maint = "<a href='/maintenance.html'><button>Esci da modalità manutenzione</button></a>"
-	else:
-		maint = "<a href='/maintenance.html'><button>Entra in modalità manutenzione</button></a>"
+	maint = "<a href='/maintenanceOff.html'><button>Esci da modalità manutenzione</button></a>"
+	maint = maint + "<a href='/maintenanceOn.html'><button>Entra in modalità manutenzione</button></a>"
 	page += maint
 	ending = """
 </center>
@@ -188,7 +217,9 @@ def home():
 	page += ending
 	return page
 
-api.add_resource(maintenance, '/maintenance.html')
+
+api.add_resource(maintenanceOn, '/maintenanceOn.html')
+api.add_resource(maintenanceOff, '/maintenanceOff.html')
 api.add_resource(downstairs, '/DOWNSTAIRS')
 api.add_resource(upstairs, '/UPSTAIRS')
 api.add_resource(alert, '/alert')

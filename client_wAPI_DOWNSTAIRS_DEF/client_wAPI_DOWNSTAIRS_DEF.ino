@@ -1,10 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
+#include "variable.h"
 
 //Constants
-const char* ssid="ssid";
-const char* password="password";
+//const char* ssid="ssid";
+//const char* password="password";
 String nom="DOWNSTAIRS";
 #define LED LED_BUILTIN
 
@@ -14,12 +15,12 @@ int lastcheck;
 //mail stuff
 #include <Arduino.h>
 #include <ESP_Mail_Client.h>
-#define SMTP_HOST "mailserver"
-#define SMTP_PORT 465
-#define AUTHOR_EMAIL "email"
-#define AUTHOR_PASSWORD "password"
-#define SMTP_DOMAIN "domain"
-#define ADMIN_EMAIL "emailto"
+//#define SMTP_HOST "mailserver"
+//#define SMTP_PORT 465
+//#define AUTHOR_EMAIL "email"
+//#define AUTHOR_PASSWORD "password"
+//#define SMTP_DOMAIN "domain"
+//#define ADMIN_EMAIL "emailto"
 SMTPSession smtp;
 void smtpCallback(SMTP_Status status);
 
