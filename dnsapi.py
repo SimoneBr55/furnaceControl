@@ -6,6 +6,7 @@ import time
 import datetime
 from pushbullet import Pushbullet
 from decouple import config
+from lib.homepage import homepage
 upState = False
 downState = False
 manual = False
@@ -113,7 +114,9 @@ class furnOff(Resource):
 
 @app.route("/")
 def home():
-	page = """<!DOCTYPE HTML>
+	"""
+def home():
+	page = \"""<!DOCTYPE HTML>
 	<html>
 	<head>
 	<meta name='apple-mobile-web-app-capable' content='yes' />
@@ -135,8 +138,10 @@ def home():
     <br><br>
     <br><br>
 	</body>
-	</html>"""
+	</html>\"""
 	return page
+""" 
+	return homepage()
 
 
 @app.route("/advanced")

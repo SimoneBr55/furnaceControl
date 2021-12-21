@@ -40,7 +40,7 @@ void setup() {
 void loop() {
   flash(100);
   alive(nom);
-  delay(900);
+  delay(90000);
 }
 
 int alive(String order){
