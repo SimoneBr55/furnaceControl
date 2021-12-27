@@ -7,6 +7,8 @@ import datetime
 from pushbullet import Pushbullet
 from decouple import config
 from lib.homepage import homepage
+import threading
+
 upState = False
 downState = False
 manual = False
@@ -19,24 +21,32 @@ app = Flask(__name__)
 api = Api(app)
 pb_api = config('pb_api')
 device = config('dev')
+server_info = config('server_info')
+user_info = config('user_info')
+passw_info = config('passw_info')
+receiver_info = config('receiver_info')
+
+def what_time_is_it():
+	today = datetime.date.today()
+	now = time.time() - time.mktime(today.timetuple())
+	return now
+
 class alert(Resource):
 	def get(self):
 		print("Alert!!!")
-		alert()
+		alert("Generic Error")
 		#data = time.strftime("%H,%M,%S",time.gmtime())
 		return 200
 
 class timer(Resource):
 	def get(self):
-		today = datetime.date.today()
-		ssm = time.time() - time.mktime(today.timetuple())
+		ssm = what_time_is_it()
 		return int(ssm)
 
 class upstairs(Resource):
 	def get(self):
 		global lastUp
-		today = datetime.date.today()
-		lastUp = time.time() - time.mktime(today.timetuple())
+		lastUp = what_time_is_it()
 		global upState
 		upState = True
 		return 200
@@ -44,8 +54,7 @@ class upstairs(Resource):
 class downstairs(Resource):
 	def get(self):
 		global lastDown
-		today = datetime.date.today()
-		lastDown = time.time() - time.mktime(today.timetuple())
+		lastDown = what_time_is_it()
 		global downState
 		downState = True
 		return 200
@@ -59,11 +68,12 @@ class check(Resource):
 		global manual
 		global payload
 		global schedule
+		global last_check
 		if (payload == 9999 or payload == 10000):
 			return payload
 		resetTime = 240
-		today = datetime.date.today()
-		now = time.time() - time.mktime(today.timetuple())
+		now = what_time_is_it()
+		last_check = now
 		if any(lower <= int(now) <= upper for (lower,upper) in schedule):
 			payload = 1414
 			return payload
@@ -235,11 +245,66 @@ api.add_resource(furnOff, '/furnOff.html')
 api.add_resource(automatic, '/automatic.html')
 
 
-def alert():
-	pb = Pushbullet(pb_api)
-	dev = pb.get_device(device)
-	push = dev.push_note("Titolo di Prova", "Stop")
+def alert(case):
+	try:
+		pb = Pushbullet(pb_api)
+		dev = pb.get_device(device)
+		push = dev.push_note("Furnace API", "Error with " + str(case))
+	except:
+		print("Sending mail")
+		mailing(case)
+		
 
+def checking(stop, reset_time):
+	global last_check
+	while True:
+		if stop():
+			print("dead")
+			break
+		now = what_time_is_it()
+		delay = int(now) - int(last_check)
+		if delay >= reset_time:
+			print("delay")
+			alert("Furnace")
+			time.sleep(4)
+		time.sleep(8)
+
+def mailing(case):
+	import os, sys
+	import smtplib
+	from email.mime.text import MIMEText
+	from email.mime.multipart import MIMEMultipart
+	from email.mime.base import MIMEBase
+	from email import encoders
+	
+	subject = "API Furnace Control"
+	body = "There was a problem catched by the furnace API. The case of the problem is: "
+	body = body + case
+	
+	# imported via config: server_info, user_info, passw_info, receiver_info
+	server = smtplib.SMTP(str(server_info), 587)
+	server.ehlo()
+	server.starttls()
+	# Login
+	user = str(user_info)
+	passw = str(passw_info)
+	server.login(user, passw)
+	
+	msg = MIMEMultipart()
+	msg['Subject'] = subject
+	msg['From'] = 'Furnace API'
+	receivers = receiver_info
+	msg['To'] = receivers
+	msg.attach(MIMEText(body, 'plain'))
+	# Send email
+	server.sendmail(user, receivers, msg.as_string())
+	server.quit()
 
 if __name__ == '__main__':
+	#mailing("crap") # for testing purposes
+	stop_threads = False # Yet to implement the stopping condition for the checking thread
+	last_check = what_time_is_it()
+	error_time = 12
+	t1 = threading.Thread(target = checking, args =(lambda : stop_threads, error_time))
+	t1.start()
 	app.run("0.0.0.0", port=5000)
