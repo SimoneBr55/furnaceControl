@@ -17,7 +17,7 @@ manual = False
 lastUp = 0
 lastDown = 0
 payload = 0
-schedule = [()]
+#schedule = 0
 
 app = Flask(__name__)
 api = Api(app)
@@ -76,9 +76,9 @@ class check(Resource):
 		resetTime = 240
 		now = what_time_is_it()
 		last_check = now
-		if any(lower <= int(now) <= upper for (lower,upper) in schedule):
-			payload = 1414
-			return payload
+		#if any(lower <= int(now) <= upper for (lower,upper) in schedule):
+		#	payload = 1414
+		#	return payload
 		if (manual != True):
 			if( (int(now) - lastUp) >= resetTime):
 				upState = False
@@ -309,4 +309,4 @@ if __name__ == '__main__':
 	error_time = 12
 	t1 = threading.Thread(target = checking, args =(lambda : stop_threads, error_time))
 	t1.start()
-	app.run("0.0.0.0", port=9000)
+	app.run("0.0.0.0", port=5000)
