@@ -1,3 +1,5 @@
+# dnsapi_bleeding b2.0
+
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 import pandas as pd
@@ -15,7 +17,7 @@ manual = False
 lastUp = 0
 lastDown = 0
 payload = 0
-schedule = [(12600, 13200)]
+schedule = [()]
 
 app = Flask(__name__)
 api = Api(app)
