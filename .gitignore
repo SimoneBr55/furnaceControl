@@ -4,3 +4,4 @@ client_wAPI_DOWNSTAIRS_DEF
 client_wAPI_UPSTAIRS_DEF
 master_wAPI/variables.h
 client_wAPI/variables.h
+oldlog/
