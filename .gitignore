@@ -6,3 +6,5 @@ master_wAPI/variables.h
 client_wAPI/variables.h
 oldlog/
 dnsapi.log
+environment/
+lib/__pycache__/
