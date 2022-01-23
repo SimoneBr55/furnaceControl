@@ -5,4 +5,4 @@ client_wAPI_UPSTAIRS_DEF
 master_wAPI/variables.h
 client_wAPI/variables.h
 environment/
-lib/
+lib/__pycache__
