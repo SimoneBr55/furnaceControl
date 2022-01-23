@@ -1,3 +1,5 @@
+# dnsapi_bleeding b2.0
+
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 import pandas as pd
@@ -15,7 +17,7 @@ manual = False
 lastUp = 0
 lastDown = 0
 payload = 0
-schedule = [(12600, 13200)]
+#schedule = 0
 
 app = Flask(__name__)
 api = Api(app)
@@ -74,9 +76,9 @@ class check(Resource):
 		resetTime = 240
 		now = what_time_is_it()
 		last_check = now
-		if any(lower <= int(now) <= upper for (lower,upper) in schedule):
-			payload = 1414
-			return payload
+		#if any(lower <= int(now) <= upper for (lower,upper) in schedule):
+		#	payload = 1414
+		#	return payload
 		if (manual != True):
 			if( (int(now) - lastUp) >= resetTime):
 				upState = False
