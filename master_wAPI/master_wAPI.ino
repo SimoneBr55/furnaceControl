@@ -116,10 +116,9 @@ int requestStatus(){
       alert_API();
       Serial.println("Sending email to administrator!");
       mail();
-      furnOn();
       lastcheck = millis();
       http.end();
-      return 10000;
+      return 3141;
     }
   }
 }
