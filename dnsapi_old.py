@@ -1,4 +1,4 @@
-# dnsapi_bleeding b2.1
+# dnsapi_bleeding v2.0
 
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
@@ -36,7 +36,7 @@ def what_time_is_it():
 class alert(Resource):
 	def get(self):
 		print("Alert!!!")
-		alert("Generic Error from Valve")
+		alert("Generic Error")
 		#data = time.strftime("%H,%M,%S",time.gmtime())
 		return 200
 
@@ -247,14 +247,14 @@ api.add_resource(furnOff, '/furnOff.html')
 api.add_resource(automatic, '/automatic.html')
 
 
-def alert(source, case):
+def alert(case):
 	try:
 		pb = Pushbullet(pb_api)
 		dev = pb.get_device(device)
-		push = dev.push_note("APIFC message from ", str(source), "Error with " + str(case))
+		push = dev.push_note("Furnace API", "Error with " + str(case))
 	except:
 		print("Sending mail")
-		mailing(source, case)
+		mailing(case)
 		
 
 def checking(stop, reset_time):
@@ -267,12 +267,11 @@ def checking(stop, reset_time):
 		delay = int(now) - int(last_check)
 		if delay >= reset_time:
 			print("delay")
-			alert("DNS","Furnace not checking in with DNS")
-			#alerting += 1  # still undecided if having a counter to stop overreacting and overloading pushbullet or mail sending
-			#time.sleep(4)  # this sould be not necessary
-		time.sleep(4)
+			alert("Furnace")
+			time.sleep(4)
+		time.sleep(8)
 
-def mailing(source, case):
+def mailing(case):
 	import os, sys
 	import smtplib
 	from email.mime.text import MIMEText
@@ -280,10 +279,9 @@ def mailing(source, case):
 	from email.mime.base import MIMEBase
 	from email import encoders
 	
-	subject = "APIFC message from "
-	subject += str(source)
+	subject = "API Furnace Control"
 	body = "There was a problem catched by the furnace API. The case of the problem is: "
-	body = body + str(case)
+	body = body + case
 	
 	# imported via config: server_info, user_info, passw_info, receiver_info
 	server = smtplib.SMTP(str(server_info), 587)
