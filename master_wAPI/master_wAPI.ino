@@ -63,10 +63,15 @@ void checkCode(int code){
    *                400 caldaia in spegnimento da valvole
    *                3141 caldaia in accensione da manuale
    *                314 caldaia in spegnimento da manuale
+   *                10001 temporaneamente non connesso
    *
    *                0-999 caldaia spenta
    *                1000-9999 caldaia accesa
   */
+  if (cod == 10001){
+      Serial.println("Waiting...");
+      return;
+  }
   if (code >= 1000 && code < 9999){
       if (state != true){
         Serial.println("La Caldaia va accesa");
@@ -120,6 +125,7 @@ int requestStatus(){
       http.end();
       return 3141;
     }
+    return 10001;
   }
 }
 

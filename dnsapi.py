@@ -305,6 +305,7 @@ def mailing(source, case):
 	server.quit()
 
 if __name__ == '__main__':
+	# Convert into TRY-EXCEPT block
 	#mailing("crap") # for testing purposes
 	stop_threads = False # Yet to implement the stopping condition for the checking thread
 	last_check = what_time_is_it()
