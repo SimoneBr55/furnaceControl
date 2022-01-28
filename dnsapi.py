@@ -36,7 +36,7 @@ def what_time_is_it():
 class alert(Resource):
 	def get(self):
 		print("Alert!!!")
-		alert("Generic Error from Valve")
+		alert("Generic Error from Valve", "HTTP Alert Request")
 		#data = time.strftime("%H,%M,%S",time.gmtime())
 		return 200
 
