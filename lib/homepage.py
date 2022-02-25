@@ -20,6 +20,8 @@ def homepage():
     </center>
     <br><br>
     <br><br>
-	</body>
+	<br><br>
+	<a href='/advanced'><button>Vista Avanzata</button></a>
+	</body>e
 	</html>"""
 	return page

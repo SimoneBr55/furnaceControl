@@ -1,4 +1,4 @@
-# dnsapi_bleeding b2.1
+# dnsapi_bleeding v2.1
 
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
@@ -126,33 +126,6 @@ class furnOff(Resource):
 
 @app.route("/")
 def home():
-	"""
-def home():
-	page = \"""<!DOCTYPE HTML>
-	<html>
-	<head>
-	<meta name='apple-mobile-web-app-capable' content='yes' />
-	<meta name='apple-mobile-web-app-status-bar-style' content='black-translucent' />
-	<meta charset=\"utf-8\" />
-	</head>
-	<body style = ' background-color:#000000; color:white;'>
-	<h1><center> ESP8266 - Controllo Elettrico Caldaia </center></h1>
-	<hr/><hr>
-	<br><br>
-	<br><br>
-	<h2> Comandi </h2>
-    <center>
-    Accensione Manuale
-    <a href='/furnOn.html'><button>Accendi Caldaia</button></a>
-    <a href='/furnOff.html'><button>Spegni Caldaia</button></a><br />
-    <a href='/automatic.html'><button>Ritorna in Automatico</button></a>
-    </center>
-    <br><br>
-    <br><br>
-	</body>
-	</html>\"""
-	return page
-""" 
 	return homepage()
 
 
@@ -255,7 +228,7 @@ def alert(source, case):
 	except:
 		print("Sending mail")
 		mailing(source, case)
-		
+
 
 def checking(stop, reset_time):
 	global last_check
@@ -279,12 +252,12 @@ def mailing(source, case):
 	from email.mime.multipart import MIMEMultipart
 	from email.mime.base import MIMEBase
 	from email import encoders
-	
+
 	subject = "APIFC message from "
 	subject += str(source)
 	body = "There was a problem catched by the furnace API. The case of the problem is: "
 	body = body + str(case)
-	
+
 	# imported via config: server_info, user_info, passw_info, receiver_info
 	server = smtplib.SMTP(str(server_info), 587)
 	server.ehlo()
@@ -293,7 +266,7 @@ def mailing(source, case):
 	user = str(user_info)
 	passw = str(passw_info)
 	server.login(user, passw)
-	
+
 	msg = MIMEMultipart()
 	msg['Subject'] = subject
 	msg['From'] = 'Furnace API'
@@ -311,4 +284,4 @@ if __name__ == '__main__':
 	error_time = 12
 	t1 = threading.Thread(target = checking, args =(lambda : stop_threads, error_time))
 	t1.start()
-	app.run("0.0.0.0", port=5000)
+	app.run("172.17.0.1", port=5005)

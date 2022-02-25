@@ -1,4 +1,4 @@
-# dnsapi_bleeding v2.0
+# dnsapi v2.0
 
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
