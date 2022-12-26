@@ -14,6 +14,7 @@ import threading
 upState = False
 downState = False
 manual = False
+forceOn = False
 lastUp = 0
 lastDown = 0
 payload = 0
@@ -71,6 +72,8 @@ class check(Resource):
 		global payload
 		global schedule
 		global last_check
+		# manual override
+		#return 315
 		if (payload == 9999 or payload == 10000):
 			return payload
 		resetTime = 240
@@ -112,14 +115,18 @@ class furnOn(Resource):
 	def get(self):
 		global manual
 		global payload
+		global forceOn
+		forceOn = True
 		manual = True
 		payload = 3141
-		#return 200
+		return 200
 
 class furnOff(Resource):
 	def get(self):
 		global manual
 		global payload
+		global forceOn
+		forceOn = False
 		manual = True
 		payload = 314
 		return 200
@@ -161,6 +168,7 @@ def advanced():
 	global upState
 	global downState
 	global manual
+	global forceOn
 	page = """ <!DOCTYPE HTML>
  <html>
  <head>
@@ -189,13 +197,10 @@ def advanced():
  <table border='5'>
  <tr>
 """
-	if manual:
+	if upState or downState or forceOn:
 		status_furnace = "<td>La Caldaia è Accesa</td>"
 	else:
-		if upState or downState:
-			status_furnace = "<td>La Caldaia è Accesa</td>"
-		else:
-			status_furnace = "<td>La Caldaia è Spenta</td>"
+		status_furnace = "<td>La Caldaia è Spenta</td>"
 	page += status_furnace
 	page += "<br />"
 	if manual:
